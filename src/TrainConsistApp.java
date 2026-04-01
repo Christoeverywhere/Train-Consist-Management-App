@@ -1,10 +1,16 @@
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class TrainConsistApp {
     public static void main(String[] args) {
         System.out.println("=== Train Consist Management App ===");
 
-        ArrayList<String> passengerBogies = new ArrayList<>();
+        List<String> passengerBogies = new ArrayList<>();
+
+        System.out.println("Train consist initialized.");
+        System.out.println("Initial bogie count: " + passengerBogies.size());
 
         passengerBogies.add("Sleeper");
         passengerBogies.add("AC Chair");
@@ -23,6 +29,16 @@ public class TrainConsistApp {
         }
 
         System.out.println("Final passenger bogie list: " + passengerBogies);
+
+        Set<String> bogieIds = new HashSet<>();
+
+        bogieIds.add("BG101");
+        bogieIds.add("BG102");
+        bogieIds.add("BG101");
+        bogieIds.add("BG103");
+        bogieIds.add("BG102");
+
+        System.out.println("Unique bogie IDs in the train: " + bogieIds);
         System.out.println("Program continues...");
     }
 }
