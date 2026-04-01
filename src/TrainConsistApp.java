@@ -1,44 +1,26 @@
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.LinkedList;
 
 public class TrainConsistApp {
     public static void main(String[] args) {
         System.out.println("=== Train Consist Management App ===");
 
-        List<String> passengerBogies = new ArrayList<>();
+        LinkedList<String> trainConsist = new LinkedList<>();
 
-        System.out.println("Train consist initialized.");
-        System.out.println("Initial bogie count: " + passengerBogies.size());
+        trainConsist.add("Engine");
+        trainConsist.add("Sleeper");
+        trainConsist.add("AC");
+        trainConsist.add("Cargo");
+        trainConsist.add("Guard");
 
-        passengerBogies.add("Sleeper");
-        passengerBogies.add("AC Chair");
-        passengerBogies.add("First Class");
+        System.out.println("Initial train consist: " + trainConsist);
 
-        System.out.println("Passenger bogies after addition: " + passengerBogies);
+        trainConsist.add(2, "Pantry Car");
 
-        passengerBogies.remove("AC Chair");
+        System.out.println("After inserting Pantry Car: " + trainConsist);
 
-        System.out.println("Passenger bogies after removal: " + passengerBogies);
+        trainConsist.removeFirst();
+        trainConsist.removeLast();
 
-        if (passengerBogies.contains("Sleeper")) {
-            System.out.println("Sleeper bogie exists in the train.");
-        } else {
-            System.out.println("Sleeper bogie does not exist in the train.");
-        }
-
-        System.out.println("Final passenger bogie list: " + passengerBogies);
-
-        Set<String> bogieIds = new HashSet<>();
-
-        bogieIds.add("BG101");
-        bogieIds.add("BG102");
-        bogieIds.add("BG101");
-        bogieIds.add("BG103");
-        bogieIds.add("BG102");
-
-        System.out.println("Unique bogie IDs in the train: " + bogieIds);
-        System.out.println("Program continues...");
+        System.out.println("Final ordered train consist: " + trainConsist);
     }
 }
