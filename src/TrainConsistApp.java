@@ -1,38 +1,97 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-class Bogie {
-    String name;
-    int capacity;
+abstract class Bogie {
+    private String bogieId;
+    private String bogieType;
 
-    Bogie(String name, int capacity) {
-        this.name = name;
-        this.capacity = capacity;
+    public Bogie(String bogieId, String bogieType) {
+        this.bogieId = bogieId;
+        this.bogieType = bogieType;
+    }
+
+    public String getBogieId() {
+        return bogieId;
+    }
+
+    public String getBogieType() {
+        return bogieType;
+    }
+
+    public abstract void displayDetails();
+}
+
+class PassengerBogie extends Bogie {
+    private int seatCapacity;
+
+    public PassengerBogie(String bogieId, String bogieType, int seatCapacity) {
+        super(bogieId, bogieType);
+        this.seatCapacity = seatCapacity;
+    }
+
+    public int getSeatCapacity() {
+        return seatCapacity;
+    }
+
+    public void displayDetails() {
+        System.out.println("Passenger Bogie ID: " + getBogieId() + ", Type: " + getBogieType() + ", Seats: " + seatCapacity);
+    }
+}
+
+class GoodsBogie extends Bogie {
+    private String shapeType;
+    private String cargoType;
+
+    public GoodsBogie(String bogieId, String bogieType, String shapeType, String cargoType) {
+        super(bogieId, bogieType);
+        this.shapeType = shapeType;
+        this.cargoType = cargoType;
+    }
+
+    public String getShapeType() {
+        return shapeType;
+    }
+
+    public String getCargoType() {
+        return cargoType;
+    }
+
+    public void displayDetails() {
+        System.out.println("Goods Bogie ID: " + getBogieId() + ", Type: " + getBogieType() + ", Shape: " + shapeType + ", Cargo: " + cargoType);
+    }
+}
+
+class TrainConsist {
+    private List<Bogie> bogies = new ArrayList<>();
+
+    public void addBogie(Bogie bogie) {
+        bogies.add(bogie);
+    }
+
+    public void groupBogiesByType() {
+        Map<String, List<Bogie>> groupedBogies = bogies.stream()
+                .collect(Collectors.groupingBy(Bogie::getBogieType));
+
+        for (Map.Entry<String, List<Bogie>> entry : groupedBogies.entrySet()) {
+            System.out.println("\nBogie Type: " + entry.getKey());
+            for (Bogie bogie : entry.getValue()) {
+                bogie.displayDetails();
+            }
+        }
     }
 }
 
 public class TrainConsistApp {
     public static void main(String[] args) {
-        System.out.println("=== Train Consist Management App ===");
+        TrainConsist train = new TrainConsist();
 
-        List<Bogie> bogies = new ArrayList<>();
+        train.addBogie(new PassengerBogie("P101", "Sleeper", 72));
+        train.addBogie(new PassengerBogie("P102", "AC Chair", 60));
+        train.addBogie(new PassengerBogie("P103", "Sleeper", 70));
+        train.addBogie(new PassengerBogie("P104", "First Class", 30));
+        train.addBogie(new GoodsBogie("G201", "Goods", "Rectangular", "Coal"));
+        train.addBogie(new GoodsBogie("G202", "Goods", "Cylindrical", "Oil"));
 
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 56));
-        bogies.add(new Bogie("First Class", 24));
-        bogies.add(new Bogie("General", 90));
-
-        List<Bogie> filteredBogies = bogies.stream()
-                .filter(b -> b.capacity > 60)
-                .collect(Collectors.toList());
-
-        System.out.println("Filtered bogies with capacity greater than 60:");
-
-        for (Bogie b : filteredBogies) {
-            System.out.println(b.name + " -> " + b.capacity);
-        }
-
-        System.out.println("Program continues...");
+        train.groupBogiesByType();
     }
 }
