@@ -23,19 +23,38 @@ public class TrainConsistApp {
     public static void main(String[] args) {
         List<GoodsBogie> goodsBogies = new ArrayList<>();
 
-        goodsBogies.add(new GoodsBogie("Cylindrical", "Petroleum"));
-        goodsBogies.add(new GoodsBogie("Open", "Coal"));
-        goodsBogies.add(new GoodsBogie("Box", "Grain"));
-        goodsBogies.add(new GoodsBogie("Cylindrical", "Petroleum"));
+        for (int i = 1; i <= 100000; i++) {
+            if (i % 5 == 0) {
+                goodsBogies.add(new GoodsBogie("Cylindrical", "Petroleum"));
+            } else {
+                goodsBogies.add(new GoodsBogie("Open", "Coal"));
+            }
+        }
 
-        boolean isSafetyCompliant = goodsBogies.stream()
+        long startLoop = System.nanoTime();
+
+        boolean loopResult = true;
+        for (GoodsBogie bogie : goodsBogies) {
+            if (bogie.getBogieType().equalsIgnoreCase("Cylindrical") &&
+                    !bogie.getCargoType().equalsIgnoreCase("Petroleum")) {
+                loopResult = false;
+                break;
+            }
+        }
+
+        long endLoop = System.nanoTime();
+
+        long startStream = System.nanoTime();
+
+        boolean streamResult = goodsBogies.stream()
                 .allMatch(bogie -> !bogie.getBogieType().equalsIgnoreCase("Cylindrical")
                         || bogie.getCargoType().equalsIgnoreCase("Petroleum"));
 
-        if (isSafetyCompliant) {
-            System.out.println("Train is safety compliant");
-        } else {
-            System.out.println("Train is NOT safety compliant");
-        }
+        long endStream = System.nanoTime();
+
+        System.out.println("Loop Validation Result: " + loopResult);
+        System.out.println("Loop Execution Time (ns): " + (endLoop - startLoop));
+        System.out.println("Stream Validation Result: " + streamResult);
+        System.out.println("Stream Execution Time (ns): " + (endStream - startStream));
     }
 }
