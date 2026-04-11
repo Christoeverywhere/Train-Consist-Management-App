@@ -1,5 +1,5 @@
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 abstract class Bogie {
     private String bogieId;
@@ -48,14 +48,6 @@ class GoodsBogie extends Bogie {
         this.cargoType = cargoType;
     }
 
-    public String getShapeType() {
-        return shapeType;
-    }
-
-    public String getCargoType() {
-        return cargoType;
-    }
-
     public void displayDetails() {
         System.out.println("Goods Bogie ID: " + getBogieId() + ", Type: " + getBogieType() + ", Shape: " + shapeType + ", Cargo: " + cargoType);
     }
@@ -68,15 +60,17 @@ class TrainConsist {
         bogies.add(bogie);
     }
 
-    public void groupBogiesByType() {
-        Map<String, List<Bogie>> groupedBogies = bogies.stream()
-                .collect(Collectors.groupingBy(Bogie::getBogieType));
+    public int countTotalSeats() {
+        return bogies.stream()
+                .filter(b -> b instanceof PassengerBogie)
+                .map(b -> (PassengerBogie) b)
+                .map(PassengerBogie::getSeatCapacity)
+                .reduce(0, Integer::sum);
+    }
 
-        for (Map.Entry<String, List<Bogie>> entry : groupedBogies.entrySet()) {
-            System.out.println("\nBogie Type: " + entry.getKey());
-            for (Bogie bogie : entry.getValue()) {
-                bogie.displayDetails();
-            }
+    public void displayAllBogies() {
+        for (Bogie bogie : bogies) {
+            bogie.displayDetails();
         }
     }
 }
@@ -87,11 +81,12 @@ public class TrainConsistApp {
 
         train.addBogie(new PassengerBogie("P101", "Sleeper", 72));
         train.addBogie(new PassengerBogie("P102", "AC Chair", 60));
-        train.addBogie(new PassengerBogie("P103", "Sleeper", 70));
-        train.addBogie(new PassengerBogie("P104", "First Class", 30));
+        train.addBogie(new PassengerBogie("P103", "First Class", 30));
+        train.addBogie(new PassengerBogie("P104", "Sleeper", 72));
         train.addBogie(new GoodsBogie("G201", "Goods", "Rectangular", "Coal"));
         train.addBogie(new GoodsBogie("G202", "Goods", "Cylindrical", "Oil"));
 
-        train.groupBogiesByType();
+        train.displayAllBogies();
+        System.out.println("Total Seats in Train: " + train.countTotalSeats());
     }
 }
