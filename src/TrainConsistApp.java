@@ -1,60 +1,44 @@
-import java.util.ArrayList;
-import java.util.List;
+class InvalidCapacityException extends Exception {
+    public InvalidCapacityException(String message) {
+        super(message);
+    }
+}
 
-class GoodsBogie {
+class PassengerBogie {
     private String bogieType;
-    private String cargoType;
+    private int seatCapacity;
 
-    public GoodsBogie(String bogieType, String cargoType) {
+    public PassengerBogie(String bogieType, int seatCapacity) throws InvalidCapacityException {
+        if (seatCapacity <= 0) {
+            throw new InvalidCapacityException("Capacity must be greater than zero");
+        }
         this.bogieType = bogieType;
-        this.cargoType = cargoType;
+        this.seatCapacity = seatCapacity;
     }
 
     public String getBogieType() {
         return bogieType;
     }
 
-    public String getCargoType() {
-        return cargoType;
+    public int getSeatCapacity() {
+        return seatCapacity;
     }
 }
 
 public class TrainConsistApp {
     public static void main(String[] args) {
-        List<GoodsBogie> goodsBogies = new ArrayList<>();
+        try {
+            PassengerBogie bogie1 = new PassengerBogie("Sleeper", 72);
+            System.out.println("Passenger Bogie Created Successfully");
+            System.out.println("Bogie Type: " + bogie1.getBogieType());
+            System.out.println("Seat Capacity: " + bogie1.getSeatCapacity());
 
-        for (int i = 1; i <= 100000; i++) {
-            if (i % 5 == 0) {
-                goodsBogies.add(new GoodsBogie("Cylindrical", "Petroleum"));
-            } else {
-                goodsBogies.add(new GoodsBogie("Open", "Coal"));
-            }
+            PassengerBogie bogie2 = new PassengerBogie("AC Chair", 0);
+            System.out.println("Passenger Bogie Created Successfully");
+            System.out.println("Bogie Type: " + bogie2.getBogieType());
+            System.out.println("Seat Capacity: " + bogie2.getSeatCapacity());
+        } catch (InvalidCapacityException e) {
+            System.out.println("Exception: " + e.getMessage());
         }
-
-        long startLoop = System.nanoTime();
-
-        boolean loopResult = true;
-        for (GoodsBogie bogie : goodsBogies) {
-            if (bogie.getBogieType().equalsIgnoreCase("Cylindrical") &&
-                    !bogie.getCargoType().equalsIgnoreCase("Petroleum")) {
-                loopResult = false;
-                break;
-            }
-        }
-
-        long endLoop = System.nanoTime();
-
-        long startStream = System.nanoTime();
-
-        boolean streamResult = goodsBogies.stream()
-                .allMatch(bogie -> !bogie.getBogieType().equalsIgnoreCase("Cylindrical")
-                        || bogie.getCargoType().equalsIgnoreCase("Petroleum"));
-
-        long endStream = System.nanoTime();
-
-        System.out.println("Loop Validation Result: " + loopResult);
-        System.out.println("Loop Execution Time (ns): " + (endLoop - startLoop));
-        System.out.println("Stream Validation Result: " + streamResult);
-        System.out.println("Stream Execution Time (ns): " + (endStream - startStream));
     }
 }
