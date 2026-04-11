@@ -1,92 +1,38 @@
-import java.util.*;
-import java.util.stream.*;
-
-abstract class Bogie {
-    private String bogieId;
-    private String bogieType;
-
-    public Bogie(String bogieId, String bogieType) {
-        this.bogieId = bogieId;
-        this.bogieType = bogieType;
-    }
-
-    public String getBogieId() {
-        return bogieId;
-    }
-
-    public String getBogieType() {
-        return bogieType;
-    }
-
-    public abstract void displayDetails();
-}
-
-class PassengerBogie extends Bogie {
-    private int seatCapacity;
-
-    public PassengerBogie(String bogieId, String bogieType, int seatCapacity) {
-        super(bogieId, bogieType);
-        this.seatCapacity = seatCapacity;
-    }
-
-    public int getSeatCapacity() {
-        return seatCapacity;
-    }
-
-    public void displayDetails() {
-        System.out.println("Passenger Bogie ID: " + getBogieId() + ", Type: " + getBogieType() + ", Seats: " + seatCapacity);
-    }
-}
-
-class GoodsBogie extends Bogie {
-    private String shapeType;
-    private String cargoType;
-
-    public GoodsBogie(String bogieId, String bogieType, String shapeType, String cargoType) {
-        super(bogieId, bogieType);
-        this.shapeType = shapeType;
-        this.cargoType = cargoType;
-    }
-
-    public void displayDetails() {
-        System.out.println("Goods Bogie ID: " + getBogieId() + ", Type: " + getBogieType() + ", Shape: " + shapeType + ", Cargo: " + cargoType);
-    }
-}
-
-class TrainConsist {
-    private List<Bogie> bogies = new ArrayList<>();
-
-    public void addBogie(Bogie bogie) {
-        bogies.add(bogie);
-    }
-
-    public int countTotalSeats() {
-        return bogies.stream()
-                .filter(b -> b instanceof PassengerBogie)
-                .map(b -> (PassengerBogie) b)
-                .map(PassengerBogie::getSeatCapacity)
-                .reduce(0, Integer::sum);
-    }
-
-    public void displayAllBogies() {
-        for (Bogie bogie : bogies) {
-            bogie.displayDetails();
-        }
-    }
-}
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TrainConsistApp {
     public static void main(String[] args) {
-        TrainConsist train = new TrainConsist();
+        Scanner scanner = new Scanner(System.in);
 
-        train.addBogie(new PassengerBogie("P101", "Sleeper", 72));
-        train.addBogie(new PassengerBogie("P102", "AC Chair", 60));
-        train.addBogie(new PassengerBogie("P103", "First Class", 30));
-        train.addBogie(new PassengerBogie("P104", "Sleeper", 72));
-        train.addBogie(new GoodsBogie("G201", "Goods", "Rectangular", "Coal"));
-        train.addBogie(new GoodsBogie("G202", "Goods", "Cylindrical", "Oil"));
+        System.out.print("Enter Train ID (Format: TRN-1234): ");
+        String trainId = scanner.nextLine();
 
-        train.displayAllBogies();
-        System.out.println("Total Seats in Train: " + train.countTotalSeats());
+        System.out.print("Enter Cargo Code (Format: PET-AB): ");
+        String cargoCode = scanner.nextLine();
+
+        String trainIdRegex = "TRN-\\d{4}";
+        String cargoCodeRegex = "PET-[A-Z]{2}";
+
+        Pattern trainPattern = Pattern.compile(trainIdRegex);
+        Pattern cargoPattern = Pattern.compile(cargoCodeRegex);
+
+        Matcher trainMatcher = trainPattern.matcher(trainId);
+        Matcher cargoMatcher = cargoPattern.matcher(cargoCode);
+
+        if (trainMatcher.matches()) {
+            System.out.println("Train ID is valid");
+        } else {
+            System.out.println("Train ID is invalid");
+        }
+
+        if (cargoMatcher.matches()) {
+            System.out.println("Cargo Code is valid");
+        } else {
+            System.out.println("Cargo Code is invalid");
+        }
+
+        scanner.close();
     }
 }
